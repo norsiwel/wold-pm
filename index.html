@@ -284,7 +284,14 @@ function playTrack(i) {
   const t = tracks[i];
   audio.src = t.file;
   audio.volume = 0.8;
-  audio.play();
+  audio.load();
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      // retry once after brief delay
+      setTimeout(() => audio.play(), 300);
+    });
+  }
   document.getElementById('nowPlaying').textContent = '▶ NOW BROADCASTING';
   document.getElementById('trackTitle').textContent = t.title;
   onAir.classList.add('active');
@@ -295,6 +302,14 @@ function playTrack(i) {
 audio.addEventListener('ended', () => {
   current = (current + 1) % tracks.length;
   playTrack(current);
+});
+
+audio.addEventListener('error', () => {
+  // Skip broken track and try next
+  setTimeout(() => {
+    current = (current + 1) % tracks.length;
+    playTrack(current);
+  }, 500);
 });
 </script>
 </body>
