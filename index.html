@@ -179,8 +179,8 @@
   .playlist { list-style:none; border:1px solid var(--amber-dim); max-height:180px; overflow-y:auto; }
   .playlist::-webkit-scrollbar { width:3px; }
   .playlist::-webkit-scrollbar-thumb { background:var(--amber-dim); }
-  .playlist li { font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.08em; padding:0.5rem 1rem; color:var(--amber-dim); cursor:pointer; border-bottom:1px solid rgba(122,79,0,0.2); transition:all 0.2s; display:flex; gap:0.6rem; align-items:center; }
-  .playlist li:hover,.playlist li.active { background:rgba(200,134,10,0.08); color:var(--amber-bright); }
+  .playlist li { font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.08em; padding:0.5rem 1rem; color:var(--amber-dim); cursor:default; border-bottom:1px solid rgba(122,79,0,0.2); display:flex; gap:0.6rem; align-items:center; }
+  .playlist li.active { background:rgba(200,134,10,0.08); color:var(--amber-bright); }
   .playlist li.active::before { content:'▶'; font-size:0.55rem; color:var(--amber-bright); }
   .playlist li:not(.active)::before { content:'○'; font-size:0.55rem; }
   footer { text-align:center; padding:2rem 1rem; border-top:1px solid rgba(122,79,0,0.2); margin-top:2.5rem; }
