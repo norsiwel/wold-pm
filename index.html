@@ -5,259 +5,341 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WOLD-PM | Post Meridian Radio</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital@0;1&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
     --amber: #c8860a;
     --amber-bright: #ffb833;
     --amber-dim: #7a4f00;
-    --dark: #0a0800;
     --darker: #050400;
-    --glow: rgba(200, 134, 10, 0.15);
   }
-
   body {
     background: var(--darker);
     color: var(--amber);
     font-family: 'Special Elite', cursive;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
+    overflow-x: hidden;
   }
-
-  /* Noise texture overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.4;
-    pointer-events: none;
-    z-index: 10;
-  }
-
-  /* Radio dial glow background */
   body::after {
     content: '';
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(200,134,10,0.08) 0%, transparent 70%);
+    inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
     pointer-events: none;
-    animation: breathe 4s ease-in-out infinite;
+    z-index: 100;
   }
-
-  @keyframes breathe {
-    0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-  }
-
-  .container {
-    text-align: center;
-    padding: 2rem;
+  .hero {
     position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('WOLD_AD.png');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    filter: brightness(0.6);
+    z-index: 0;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,rgba(5,4,0,0.1) 0%,rgba(5,4,0,0.1) 40%,rgba(5,4,0,0.8) 75%,rgba(5,4,0,1) 100%);
     z-index: 1;
-    animation: fadeIn 3s ease forwards;
   }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  .on-air-container {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 3;
   }
-
-  /* Static lines */
-  .static-line {
-    width: 200px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--amber-dim), transparent);
-    margin: 1.5rem auto;
-    animation: flicker 8s ease-in-out infinite;
+  .on-air-img {
+    width: 160px;
+    opacity: 0.25;
+    filter: grayscale(1);
+    transition: all 0.5s;
   }
-
-  @keyframes flicker {
-    0%, 95%, 100% { opacity: 1; }
-    96% { opacity: 0.3; }
-    97% { opacity: 1; }
-    98% { opacity: 0.1; }
-    99% { opacity: 0.9; }
+  .on-air-img.active {
+    opacity: 1;
+    filter: none;
+    animation: onairpulse 2s ease-in-out infinite;
   }
-
-  .call-letters {
-    font-size: clamp(3rem, 12vw, 6rem);
+  @keyframes onairpulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
+    padding: 0 1.5rem 3rem;
+  }
+  .now-playing {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.75rem;
     letter-spacing: 0.3em;
+    color: var(--amber-dim);
+    margin-bottom: 0.4rem;
+    min-height: 1.2em;
+  }
+  .track-title {
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
+    letter-spacing: 0.1em;
     color: var(--amber-bright);
-    text-shadow:
-      0 0 20px var(--amber),
-      0 0 40px var(--amber-dim),
-      0 0 80px rgba(200,134,10,0.3);
-    animation: glow-pulse 4s ease-in-out infinite, flicker 8s ease-in-out infinite;
-    line-height: 1;
+    text-shadow: 0 0 20px var(--amber);
+    margin-bottom: 1.2rem;
+    min-height: 1.5em;
   }
-
-  @keyframes glow-pulse {
-    0%, 100% { text-shadow: 0 0 20px var(--amber), 0 0 40px var(--amber-dim), 0 0 80px rgba(200,134,10,0.3); }
-    50% { text-shadow: 0 0 30px var(--amber-bright), 0 0 60px var(--amber), 0 0 120px rgba(200,134,10,0.5); }
+  .vu-meter {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+    height: 36px;
+    align-items: flex-end;
   }
-
-  .subtitle {
-    font-family: 'Courier Prime', monospace;
-    font-style: italic;
-    font-size: clamp(0.8rem, 3vw, 1.1rem);
-    letter-spacing: 0.4em;
-    color: var(--amber-dim);
-    text-transform: uppercase;
-    margin-top: 0.5rem;
+  .vu-bar {
+    width: 6px;
+    background: var(--amber-dim);
+    border-radius: 2px 2px 0 0;
+    height: 4px;
   }
-
-  .tagline {
-    font-size: clamp(1rem, 4vw, 1.4rem);
-    letter-spacing: 0.15em;
+  .vu-bar.active {
+    animation: vudance var(--speed,0.4s) ease-in-out infinite alternate;
+  }
+  @keyframes vudance {
+    from { height:4px; background:var(--amber-dim); }
+    to { height:var(--height,28px); background:var(--amber-bright); }
+  }
+  .progress-container {
+    width: 100%;
+    height: 3px;
+    background: var(--amber-dim);
+    border-radius: 2px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--amber-bright);
+    border-radius: 2px;
+    width: 0%;
+    box-shadow: 0 0 8px var(--amber);
+    transition: width 0.5s linear;
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .btn {
+    background: none;
+    border: 1px solid var(--amber-dim);
     color: var(--amber);
-    margin: 0.5rem 0;
-  }
-
-  .transmission {
-    font-family: 'Courier Prime', monospace;
-    font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-    color: var(--amber-dim);
-    letter-spacing: 0.2em;
-    line-height: 2;
-    animation: fadeIn 3s ease 1s both;
-  }
-
-  .transmission span {
-    display: block;
-  }
-
-  .on-air {
-    display: inline-block;
     font-family: 'Courier Prime', monospace;
     font-size: 0.7rem;
-    letter-spacing: 0.3em;
-    color: var(--darker);
-    background: var(--amber);
-    padding: 0.3rem 0.8rem;
-    margin-bottom: 2rem;
-    animation: blink 2s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .contact {
-    font-family: 'Courier Prime', monospace;
-    font-size: clamp(0.65rem, 2vw, 0.8rem);
-    color: var(--amber-dim);
     letter-spacing: 0.2em;
-    margin-top: 2rem;
-    animation: fadeIn 3s ease 2s both;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
   }
-
-  .contact a {
-    color: var(--amber);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-
-  .contact a:hover {
-    color: var(--amber-bright);
-    text-shadow: 0 0 10px var(--amber);
-  }
-
-  .fog {
+  .btn:hover { border-color:var(--amber-bright); color:var(--amber-bright); box-shadow:0 0 10px var(--amber-dim); }
+  .btn-play { border:2px solid var(--amber); font-size:1.4rem; padding:0.5rem 1.2rem; letter-spacing:0; }
+  .btn-play:hover { background:rgba(200,134,10,0.1); box-shadow:0 0 20px var(--amber); }
+  .volume-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
     font-family: 'Courier Prime', monospace;
-    font-style: italic;
-    font-size: clamp(0.7rem, 2vw, 0.85rem);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
     color: var(--amber-dim);
-    letter-spacing: 0.25em;
-    margin-top: 2.5rem;
-    opacity: 0.7;
-    animation: fadeIn 3s ease 3s both;
   }
-
-  .disclaimer {
-    font-family: 'Courier Prime', monospace;
-    font-size: 0.6rem;
-    color: rgba(122, 79, 0, 0.4);
-    letter-spacing: 0.1em;
-    margin-top: 1.5rem;
-    animation: fadeIn 3s ease 4s both;
-  }
-
-  /* Horizontal scan line */
-  .scanline {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(200,134,10,0.1), transparent);
-    animation: scan 8s linear infinite;
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  @keyframes scan {
-    0% { top: 0; }
-    100% { top: 100vh; }
-  }
+  input[type=range] { -webkit-appearance:none; width:100px; height:3px; background:var(--amber-dim); border-radius:2px; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:var(--amber-bright); cursor:pointer; }
+  .static-line { width:280px; height:1px; background:linear-gradient(90deg,transparent,var(--amber-dim),transparent); margin:1.5rem auto; }
+  .programming { background:rgba(5,4,0,0.97); padding:2.5rem 1.5rem; }
+  .section-title { font-size:1rem; letter-spacing:0.4em; color:var(--amber-dim); text-align:center; margin-bottom:1.5rem; text-transform:uppercase; }
+  .shows-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.2rem; max-width:860px; margin:0 auto 2.5rem; }
+  .show-card { border:1px solid var(--amber-dim); padding:1rem; transition:border-color 0.3s; }
+  .show-card:hover { border-color:var(--amber); box-shadow:0 0 12px rgba(200,134,10,0.1); }
+  .show-name { font-size:0.95rem; letter-spacing:0.12em; color:var(--amber-bright); margin-bottom:0.4rem; }
+  .show-desc { font-family:'Courier Prime',monospace; font-size:0.72rem; color:var(--amber-dim); line-height:1.6; }
+  .playlist-section { max-width:700px; margin:0 auto; padding:0 1.5rem; }
+  .playlist { list-style:none; border:1px solid var(--amber-dim); max-height:180px; overflow-y:auto; }
+  .playlist::-webkit-scrollbar { width:3px; }
+  .playlist::-webkit-scrollbar-thumb { background:var(--amber-dim); }
+  .playlist li { font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.08em; padding:0.5rem 1rem; color:var(--amber-dim); cursor:pointer; border-bottom:1px solid rgba(122,79,0,0.2); transition:all 0.2s; display:flex; gap:0.6rem; align-items:center; }
+  .playlist li:hover,.playlist li.active { background:rgba(200,134,10,0.08); color:var(--amber-bright); }
+  .playlist li.active::before { content:'▶'; font-size:0.55rem; color:var(--amber-bright); }
+  .playlist li:not(.active)::before { content:'○'; font-size:0.55rem; }
+  footer { text-align:center; padding:2rem 1rem; border-top:1px solid rgba(122,79,0,0.2); margin-top:2.5rem; }
+  footer .tagline { font-size:0.85rem; letter-spacing:0.2em; color:var(--amber-dim); margin-bottom:0.4rem; }
+  footer .contact a { font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.15em; color:var(--amber-dim); text-decoration:none; }
+  footer .contact a:hover { color:var(--amber-bright); }
+  footer .disclaimer { font-family:'Courier Prime',monospace; font-size:0.58rem; color:rgba(122,79,0,0.3); letter-spacing:0.1em; margin-top:1rem; }
+  @media(max-width:480px) { .on-air-img{width:100px;} .controls{gap:0.6rem;} .btn{padding:0.4rem 0.6rem;font-size:0.6rem;} .btn-play{font-size:1.1rem;padding:0.4rem 0.9rem;} }
 </style>
 </head>
 <body>
-
-<div class="scanline"></div>
-
-<div class="container">
-
-  <div class="on-air">● SIGNAL DETECTED</div>
-
-  <div class="call-letters">WOLD-PM</div>
-  <div class="subtitle">Post Meridian Radio</div>
-
-  <div class="static-line"></div>
-
-  <div class="tagline">Broadcasting begins soon.</div>
-
-  <div class="static-line"></div>
-
-  <div class="transmission">
-    <span>Transmitter warming up.</span>
-    <span>Tubes are cold.</span>
-    <span>Management is aware.</span>
-  </div>
-
-  <div class="static-line"></div>
-
-  <div class="transmission">
-    <span>Dark Spaces Theatre</span>
-    <span>The Unearthly Report</span>
-    <span>The World's Slowest Fast Race</span>
-    <span>...and more.</span>
-  </div>
-
-  <div class="contact">
-    Contact Management —
-    <a href="mailto:management@wold-pm.com">management@wold-pm.com</a>
-  </div>
-
-  <div class="fog">Onward through the fog.</div>
-
-  <div class="disclaimer">
-    No frogs were harmed in the making of this broadcast. Or the beer.
-  </div>
-
+<div class="on-air-container">
+  <img src="On_Air.png" class="on-air-img" id="onAirSign" alt="ON AIR">
 </div>
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="now-playing" id="nowPlaying">— WOLD-PM POST MERIDIAN RADIO —</div>
+    <div class="track-title" id="trackTitle">Don't call us. Just listen.</div>
+    <div class="vu-meter">
+      <div class="vu-bar" style="--speed:0.3s;--height:34px"></div>
+      <div class="vu-bar" style="--speed:0.5s;--height:26px"></div>
+      <div class="vu-bar" style="--speed:0.4s;--height:36px"></div>
+      <div class="vu-bar" style="--speed:0.6s;--height:20px"></div>
+      <div class="vu-bar" style="--speed:0.35s;--height:30px"></div>
+      <div class="vu-bar" style="--speed:0.45s;--height:38px"></div>
+      <div class="vu-bar" style="--speed:0.55s;--height:24px"></div>
+      <div class="vu-bar" style="--speed:0.38s;--height:34px"></div>
+      <div class="vu-bar" style="--speed:0.42s;--height:28px"></div>
+      <div class="vu-bar" style="--speed:0.52s;--height:18px"></div>
+      <div class="vu-bar" style="--speed:0.33s;--height:36px"></div>
+      <div class="vu-bar" style="--speed:0.48s;--height:22px"></div>
+    </div>
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="prevTrack()">◀◀ PREV</button>
+      <button class="btn btn-play" id="playBtn" onclick="togglePlay()">▶</button>
+      <button class="btn" onclick="nextTrack()">NEXT ▶▶</button>
+    </div>
+    <div class="volume-row">
+      <span>VOL</span>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.8" oninput="setVolume(this.value)">
+      <span id="volDisplay">80%</span>
+    </div>
+  </div>
+</div>
+<div class="programming">
+  <div class="static-line"></div>
+  <div class="section-title">On The Air</div>
+  <div class="shows-grid">
+    <div class="show-card">
+      <div class="show-name">Dark Spaces Theatre</div>
+      <div class="show-desc">Original audio drama from the pen of Nor-sigh-well. Stories for the spaces between.</div>
+    </div>
+    <div class="show-card">
+      <div class="show-name">The Unearthly Report</div>
+      <div class="show-desc">News from across the known universe. Delivered without alarm. Management is aware.</div>
+    </div>
+    <div class="show-card">
+      <div class="show-name">The World's Slowest Fast Race</div>
+      <div class="show-desc">Daily updates from the Race Around Jupiter. No one has finished. Tune in tomorrow.</div>
+    </div>
+    <div class="show-card">
+      <div class="show-name">The Dark Spaces Hour</div>
+      <div class="show-desc">Late night listener mail. Strange questions. Stranger answers. Management declines to comment.</div>
+    </div>
+  </div>
+  <div class="static-line"></div>
+  <div class="section-title">Music Library</div>
+  <div class="playlist-section">
+    <ul class="playlist" id="playlist">
+      <li class="active">— Music coming soon —</li>
+    </ul>
+  </div>
+  <div class="static-line"></div>
+</div>
+<footer>
+  <div class="tagline">WOLD-PM — Post Meridian Radio</div>
+  <div class="tagline" style="font-size:0.72rem;margin-bottom:1rem;">Onward through the fog.</div>
+  <div class="contact"><a href="mailto:management@wold-pm.com">management@wold-pm.com</a></div>
+  <div class="disclaimer">No frogs were harmed in the making of this broadcast. Or the beer.</div>
+</footer>
+<audio id="audioPlayer" preload="none"></audio>
+<script>
+const tracks = [];
+let current = 0;
+let playing = false;
+const audio = document.getElementById('audioPlayer');
+const playBtn = document.getElementById('playBtn');
+const onAir = document.getElementById('onAirSign');
+const bars = document.querySelectorAll('.vu-bar');
+const progress = document.getElementById('progressBar');
 
+function buildList() {
+  const pl = document.getElementById('playlist');
+  if (!tracks.length) return;
+  pl.innerHTML = '';
+  tracks.forEach((t,i) => {
+    const li = document.createElement('li');
+    if (i===current) li.classList.add('active');
+    li.onclick = () => loadTrack(i);
+    li.textContent = t.title;
+    pl.appendChild(li);
+  });
+}
+
+function loadTrack(i) {
+  current = i;
+  const t = tracks[i];
+  document.getElementById('trackTitle').textContent = t.title;
+  document.getElementById('nowPlaying').textContent = '▶ NOW PLAYING';
+  buildList();
+  if (t.file) {
+    audio.src = t.file;
+    audio.volume = parseFloat(document.getElementById('volumeSlider').value);
+    audio.play();
+    playing = true;
+    playBtn.textContent = '⏸';
+    onAir.classList.add('active');
+    bars.forEach(b => b.classList.add('active'));
+  }
+}
+
+function togglePlay() {
+  if (!tracks.length) return;
+  if (playing) {
+    audio.pause();
+    playing = false;
+    playBtn.textContent = '▶';
+    onAir.classList.remove('active');
+    bars.forEach(b => { b.classList.remove('active'); b.style.height='4px'; });
+    document.getElementById('nowPlaying').textContent = '— PAUSED —';
+  } else {
+    if (!audio.src) { loadTrack(current); return; }
+    audio.play();
+    playing = true;
+    playBtn.textContent = '⏸';
+    onAir.classList.add('active');
+    bars.forEach(b => b.classList.add('active'));
+    document.getElementById('nowPlaying').textContent = '▶ NOW PLAYING';
+  }
+}
+
+function prevTrack() { current=(current-1+tracks.length)%tracks.length; loadTrack(current); }
+function nextTrack() { current=(current+1)%tracks.length; loadTrack(current); }
+function setVolume(v) { audio.volume=v; document.getElementById('volDisplay').textContent=Math.round(v*100)+'%'; }
+
+audio.addEventListener('timeupdate', () => {
+  if (audio.duration) progress.style.width=(audio.currentTime/audio.duration*100)+'%';
+});
+document.getElementById('progressContainer').addEventListener('click', e => {
+  const r = e.currentTarget.getBoundingClientRect();
+  audio.currentTime = ((e.clientX-r.left)/r.width)*audio.duration;
+});
+audio.addEventListener('ended', nextTrack);
+buildList();
+</script>
 </body>
 </html>
