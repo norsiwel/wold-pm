@@ -1,10 +1,9 @@
 music/bigband.zip
 music/*.zip
-# Allow only these test tracks
-!music/65 Moonlight Seranade.mp3
-!music/06 Flying Home.mp3
-!music/23 Tuxedo Juction.mp3
-!music/48 Don't Get Around Much Anymore.mp3
-!music/17 Sentimental Journey.mp3
-# Ignore all other mp3s
-music/*.mp3
+
+# Allow only these test tracks - must come before the *.mp3 rule
+music/65 Moonlight Seranade.mp3
+music/06 Flying Home.mp3
+music/23 Tuxedo Juction.mp3
+music/48 Don't Get Around Much Anymore.mp3
+music/17 Sentimental Journey.mp3
