@@ -158,14 +158,6 @@
   .show-card:hover { border-color:var(--amber); box-shadow:0 0 12px rgba(200,134,10,0.1); }
   .show-name { font-size:0.95rem; letter-spacing:0.12em; color:var(--amber-bright); margin-bottom:0.4rem; }
   .show-desc { font-family:'Courier Prime',monospace; font-size:0.72rem; color:var(--amber-dim); line-height:1.6; }
-  .playlist-section { max-width:700px; margin:0 auto; padding:0 1.5rem; }
-  .playlist { list-style:none; border:1px solid var(--amber-dim); max-height:180px; overflow-y:auto; }
-  .playlist::-webkit-scrollbar { width:3px; }
-  .playlist::-webkit-scrollbar-thumb { background:var(--amber-dim); }
-  .playlist li { font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.08em; padding:0.5rem 1rem; color:var(--amber-dim); cursor:default; border-bottom:1px solid rgba(122,79,0,0.2); display:flex; gap:0.6rem; align-items:center; }
-  .playlist li.active { background:rgba(200,134,10,0.08); color:var(--amber-bright); }
-  .playlist li.active::before { content:'▶'; font-size:0.55rem; color:var(--amber-bright); }
-  .playlist li:not(.active)::before { content:'○'; font-size:0.55rem; }
   footer { text-align:center; padding:2rem 1rem; border-top:1px solid rgba(122,79,0,0.2); margin-top:2.5rem; }
   footer .tagline { font-size:0.85rem; letter-spacing:0.2em; color:var(--amber-dim); margin-bottom:0.4rem; }
   footer .contact a { font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.15em; color:var(--amber-dim); text-decoration:none; }
@@ -223,13 +215,6 @@
     </div>
   </div>
   <div class="static-line"></div>
-  <div class="section-title">Music Library</div>
-  <div class="playlist-section">
-    <ul class="playlist" id="playlist">
-      <li class="active">— Music coming soon —</li>
-    </ul>
-  </div>
-  <div class="static-line"></div>
 </div>
 <footer>
   <div class="tagline">WOLD-PM — Post Meridian Radio</div>
@@ -268,6 +253,7 @@ const tracks = [
   { title: "I've heard that song before", file: "music/15 I've heard that song before.mp3" },
   { title: "Tangerine", file: "music/16 Tangerine.mp3" },
   { title: "Sentimental Journey", file: "music/17 Sentimental Journey.mp3" },
+  { title: "~ WOLD-PM ~", file: "bits/station_id_01.mp3" },
   { title: "In the Mood", file: "music/18 In the Mood.mp3" },
   { title: "I Love the Rhythm in a Riff", file: "music/19 I Love the Rhythm in a Riff.mp3" },
   { title: "Opus 1", file: "music/20 Opus 1.mp3" },
@@ -299,6 +285,7 @@ const tracks = [
   { title: "Limehouse Blues", file: "music/35 Limehouse Blues.mp3" },
   { title: "Knock Me a Kiss", file: "music/36 Knock Me a Kiss.mp3" },
   { title: "After You've Gone", file: "music/37 After You've Gone.mp3" },
+  { title: "~ WOLD-PM ~", file: "bits/station_id_02.mp3" },
   { title: "Little John Special", file: "music/38 Little John Special.mp3" },
   { title: "Midnight Son", file: "music/39 Midnight Son.mp3" },
   { title: "Tampico", file: "music/40 Tampico.mp3" },
@@ -333,6 +320,7 @@ const tracks = [
   { title: "Coctails for Two", file: "music/57 Coctails for Two.mp3" },
   { title: "The Darktown Strutters' Ball", file: "music/58 The Darktown Strutters' Ball.mp3" },
   { title: "Cherokee", file: "music/59 Cherokee.mp3" },
+  { title: "~ WOLD-PM ~", file: "bits/station_id_01.mp3" },
   { title: "I Don't Wanna Walk Without You", file: "music/60 I Don't Wanna Walk Without You.mp3" },
 
   // Break — Mannavator again
