@@ -1,9 +1,14 @@
-music/bigband.zip
+# Ignore zip files
 music/*.zip
+music/bigband.zip
 
-# Allow only these test tracks - must come before the *.mp3 rule
-music/65 Moonlight Seranade.mp3
-music/06 Flying Home.mp3
-music/23 Tuxedo Juction.mp3
-music/48 Don't Get Around Much Anymore.mp3
-music/17 Sentimental Journey.mp3
+# Ignore old duplicate named tracks
+music/dont_get_around.mp3
+music/flying_home.mp3
+music/moonlight_serenade.mp3
+music/sentimental_journey.mp3
+music/tuxedo_junction.mp3
+
+# Generator output files
+tracks_local.js
+tracks_archive.js
