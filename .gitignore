@@ -14,3 +14,4 @@ tracks_archive.js
 
 # Django show audio — too large for Cloudflare, served via R2 (TODO)
 shows/DjangoHour/*.mp3
+shows/FolkInterlude/*.mp3
