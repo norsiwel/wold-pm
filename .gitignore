@@ -12,6 +12,16 @@ music/tuxedo_junction.mp3
 # Generator output files
 tracks_archive.js
 
+# Wrangler state and cache
+.wrangler/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Logs
+logs/
+
 # All audio — served from R2, never in git
 music/**/*.mp3
 music/*.mp3
