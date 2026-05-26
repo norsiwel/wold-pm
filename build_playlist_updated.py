@@ -3,7 +3,12 @@
 import sys
 import re
 import random
+import urllib.parse
 from pathlib import Path
+
+def r2_url(base, path):
+    """Build R2 URL with spaces properly encoded."""
+    return base + "/" + urllib.parse.quote(str(path).replace("\\", "/"), safe="/")
 
 # ----- Dependency Check -----
 missing = []
@@ -116,7 +121,7 @@ while music_index < len(music_tracks):
         track = music_tracks[music_index]
         playlist.append({
             "title": title_from_filename(track),
-            "file": f"{R2_BASE_URL}/{str(track).replace(chr(92), '/')}"
+            "file": r2_url(R2_BASE_URL, track)
         })
         elapsed_since_id += get_duration(track)
         music_index += 1
@@ -125,7 +130,7 @@ while music_index < len(music_tracks):
         sid = station_ids[id_index % len(station_ids)]
         playlist.append({
             "title": "~ WOLD-PM ~",
-            "file": f"{R2_BASE_URL}/{str(sid).replace(chr(92), '/')}"
+            "file": r2_url(R2_BASE_URL, sid)
         })
         elapsed_since_id = 0
         id_index += 1
@@ -135,7 +140,7 @@ while music_index < len(music_tracks):
         bit = other_bits[bit_index % len(other_bits)]
         playlist.append({
             "title": f"~ {title_from_filename(bit)} ~",
-            "file": f"{R2_BASE_URL}/{str(bit).replace(chr(92), '/')}"
+            "file": r2_url(R2_BASE_URL, bit)
         })
         bit_index += 1
 
