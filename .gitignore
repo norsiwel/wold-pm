@@ -10,5 +10,4 @@ music/sentimental_journey.mp3
 music/tuxedo_junction.mp3
 
 # Generator output files
-tracks_local.js
 tracks_archive.js
