@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WOLD-PM | Django Hour — QC Preview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --amber: #c8860a;
+    --amber-bright: #ffb833;
+    --amber-dim: #7a4f00;
+    --darker: #050400;
+  }
+  body {
+    background: var(--darker);
+    color: var(--amber);
+    font-family: 'Special Elite', cursive;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  h1 { font-size: 1.4rem; letter-spacing: 0.4em; color: var(--amber-bright); margin-bottom: 0.4rem; text-align: center; }
+  .subtitle { font-family: 'Courier Prime', monospace; font-size: 0.75rem; letter-spacing: 0.25em; color: var(--amber-dim); margin-bottom: 2rem; text-align: center; }
+  .qc-badge { font-family: 'Courier Prime', monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--amber-dim); border: 1px solid var(--amber-dim); padding: 0.2rem 0.8rem; margin-bottom: 2rem; }
+  .now-playing { font-family: 'Courier Prime', monospace; font-size: 0.75rem; letter-spacing: 0.3em; color: var(--amber-dim); margin-bottom: 0.4rem; min-height: 1.2em; text-align: center; }
+  .track-title { font-size: 1.1rem; letter-spacing: 0.1em; color: var(--amber-bright); text-shadow: 0 0 20px var(--amber); margin-bottom: 0.4rem; min-height: 1.5em; text-align: center; }
+  .track-count { font-family: 'Courier Prime', monospace; font-size: 0.7rem; color: var(--amber-dim); margin-bottom: 1.5rem; text-align: center; }
+  .vu-meter { display: flex; gap: 3px; justify-content: center; margin-bottom: 1.5rem; height: 36px; align-items: flex-end; }
+  .vu-bar { width: 6px; background: var(--amber-dim); border-radius: 2px 2px 0 0; height: 4px; }
+  .vu-bar.active { animation: vudance var(--speed,0.4s) ease-in-out infinite alternate; }
+  @keyframes vudance { from { height:4px; background:var(--amber-dim); } to { height:var(--height,28px); background:var(--amber-bright); } }
+  .controls { display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap; }
+  .btn { font-family: 'Special Elite', cursive; font-size: 0.75rem; letter-spacing: 0.3em; padding: 0.6rem 1.4rem; border: 1px solid var(--amber-dim); background: transparent; color: var(--amber); cursor: pointer; transition: all 0.3s; text-transform: uppercase; }
+  .btn:hover { border-color: var(--amber); color: var(--amber-bright); box-shadow: 0 0 10px var(--amber-dim); }
+  .btn.primary { background: var(--amber); color: var(--darker); border-color: var(--amber); }
+  .btn.primary:hover { background: var(--amber-bright); }
+  .static-line { width: 280px; height: 1px; background: linear-gradient(90deg,transparent,var(--amber-dim),transparent); margin: 1.5rem auto; }
+  .playlist { max-width: 600px; width: 100%; max-height: 300px; overflow-y: auto; border: 1px solid var(--amber-dim); }
+  .playlist-item { font-family: 'Courier Prime', monospace; font-size: 0.7rem; padding: 0.4rem 0.8rem; border-bottom: 1px solid rgba(122,79,0,0.2); color: var(--amber-dim); cursor: pointer; transition: all 0.2s; display: flex; gap: 0.8rem; align-items: center; }
+  .playlist-item:hover { background: rgba(200,134,10,0.05); color: var(--amber); }
+  .playlist-item.current { background: rgba(200,134,10,0.1); color: var(--amber-bright); border-left: 2px solid var(--amber); }
+  .playlist-item .idx { opacity: 0.4; min-width: 2em; text-align: right; }
+  .playlist-item .special { color: var(--amber); font-style: italic; }
+</style>
+</head>
+<body>
+
+<h1>WOLD-PM</h1>
+<div class="subtitle">Django Reinhardt Special Hour</div>
+<div class="qc-badge">QC PREVIEW — NOT FOR BROADCAST</div>
+
+<div class="now-playing" id="nowPlaying">— READY FOR PREVIEW —</div>
+<div class="track-title" id="trackTitle">Django Hour</div>
+<div class="track-count" id="trackCount"></div>
+
+<div class="vu-meter">
+  <div class="vu-bar" style="--speed:0.3s;--height:34px"></div>
+  <div class="vu-bar" style="--speed:0.5s;--height:26px"></div>
+  <div class="vu-bar" style="--speed:0.4s;--height:36px"></div>
+  <div class="vu-bar" style="--speed:0.6s;--height:20px"></div>
+  <div class="vu-bar" style="--speed:0.35s;--height:30px"></div>
+  <div class="vu-bar" style="--speed:0.45s;--height:38px"></div>
+  <div class="vu-bar" style="--speed:0.55s;--height:24px"></div>
+  <div class="vu-bar" style="--speed:0.38s;--height:34px"></div>
+</div>
+
+<div class="controls">
+  <button class="btn primary" id="playBtn" onclick="togglePlay()">▶ PLAY</button>
+  <button class="btn" onclick="prevTrack()">◀ PREV</button>
+  <button class="btn" onclick="nextTrack()">NEXT ▶</button>
+  <button class="btn" onclick="playTrack(0)">⏮ RESTART</button>
+</div>
+
+<div class="static-line"></div>
+<div class="playlist" id="playlist"></div>
+
+<audio id="audioPlayer" preload="none"></audio>
+
+<script src="shows/DjangoHour/django_show.js"></script>
+<script>
+const tracks = djangoShow;
+let current = 0;
+let playing = false;
+const audio = document.getElementById('audioPlayer');
+const bars = document.querySelectorAll('.vu-bar');
+
+// Build playlist UI
+const playlistEl = document.getElementById('playlist');
+tracks.forEach((t, i) => {
+  const div = document.createElement('div');
+  div.className = 'playlist-item' + (t.title.startsWith('~') ? ' special' : '');
+  div.id = 'item-' + i;
+  div.innerHTML = `<span class="idx">${i + 1}</span><span>${t.title}</span>`;
+  div.onclick = () => { playTrack(i); };
+  playlistEl.appendChild(div);
+});
+
+document.getElementById('trackCount').textContent = `${tracks.length} entries — intro + ${tracks.length - 2} tracks + outro`;
+
+function playTrack(i) {
+  // Clear previous highlight
+  const prev = document.querySelector('.playlist-item.current');
+  if (prev) prev.classList.remove('current');
+
+  current = i;
+  const t = tracks[i];
+  audio.src = t.file;
+  audio.load();
+  audio.play().catch(() => setTimeout(() => audio.play(), 300));
+
+  document.getElementById('nowPlaying').textContent = '▶ NOW PREVIEWING';
+  document.getElementById('trackTitle').textContent = t.title;
+  document.getElementById('playBtn').textContent = '⏸ PAUSE';
+  playing = true;
+
+  // Highlight current in playlist
+  const cur = document.getElementById('item-' + i);
+  if (cur) { cur.classList.add('current'); cur.scrollIntoView({ block: 'nearest' }); }
+
+  bars.forEach(b => b.classList.add('active'));
+}
+
+function togglePlay() {
+  if (!playing) {
+    audio.play();
+    playing = true;
+    document.getElementById('playBtn').textContent = '⏸ PAUSE';
+    bars.forEach(b => b.classList.add('active'));
+  } else {
+    audio.pause();
+    playing = false;
+    document.getElementById('playBtn').textContent = '▶ PLAY';
+    bars.forEach(b => b.classList.remove('active'));
+  }
+}
+
+function nextTrack() {
+  playTrack((current + 1) % tracks.length);
+}
+
+function prevTrack() {
+  playTrack((current - 1 + tracks.length) % tracks.length);
+}
+
+audio.addEventListener('ended', () => {
+  if (current < tracks.length - 1) {
+    playTrack(current + 1);
+  } else {
+    // End of show
+    playing = false;
+    document.getElementById('playBtn').textContent = '▶ PLAY';
+    document.getElementById('nowPlaying').textContent = '— END OF PREVIEW —';
+    document.getElementById('trackTitle').textContent = 'Show complete.';
+    bars.forEach(b => b.classList.remove('active'));
+  }
+});
+
+audio.addEventListener('error', () => {
+  document.getElementById('nowPlaying').textContent = '⚠ FILE ERROR — SKIPPING';
+  setTimeout(() => nextTrack(), 800);
+});
+</script>
+</body>
+</html>
