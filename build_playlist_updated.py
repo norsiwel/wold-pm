@@ -59,20 +59,21 @@ if SHOWS_DIR.exists():
     for show_folder in sorted(SHOWS_DIR.iterdir()):
         if show_folder.name.startswith("_"):
             continue  # skip _template and other meta folders
-        show_js = show_folder / "show.js"
-        # Also support named JS files like django_show.js
-        if not show_js.exists():
-            js_files = list(show_folder.glob("*_show.js"))
-            if js_files:
-                show_js = js_files[0]
-        if show_js.exists():
-            tracks = load_show(show_js)
+
+        # Collect show JS files — single show.js or split show_vol1.js, show_vol2.js etc
+        js_files = sorted(show_folder.glob("show_vol*.js"))
+        if not js_files:
+            single = show_folder / "show.js"
+            if single.exists():
+                js_files = [single]
+
+        for js_file in js_files:
+            vol_label = js_file.stem.replace("show", "").replace("_", " ").strip()
+            name = f"{show_folder.name}{' ' + vol_label if vol_label else ''}"
+            tracks = load_show(js_file)
             if tracks:
-                special_shows.append({
-                    "name": show_folder.name,
-                    "tracks": tracks
-                })
-                print(f"  Loaded show: {show_folder.name} ({len(tracks)} entries)")
+                special_shows.append({"name": name, "tracks": tracks})
+                print(f"  Loaded: {name} ({len(tracks)} entries)")
 
 # ----- Load Regular Music -----
 

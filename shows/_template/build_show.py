@@ -2,6 +2,7 @@
 """
 build_show.py — WOLD-PM Special Hour Builder Template
 Usage: copy this to your show folder and edit the config section.
+Automatically splits into multiple volumes if track count exceeds MAX_TRACKS.
 """
 
 import random
@@ -11,15 +12,14 @@ from pathlib import Path
 
 SHOW_NAME    = "My Special Hour"         # Display name
 SHOW_DIR     = Path(__file__).parent     # Folder this script lives in
-OUTPUT_FILE  = SHOW_DIR / "show.js"      # Output JS playlist
-JS_VAR_NAME  = "specialShow"             # JS variable name in output
+JS_VAR_BASE  = "specialShow"            # JS variable base name (vol2 = specialShow2 etc)
 
 # Paths relative to web root (how the browser will load them)
-INTRO_FILE   = "bits/show_intro.mp3"     # Announcement before show
-OUTRO_FILE   = "bits/back_to_regular.mp3"  # Sign-off after show
+INTRO_FILE   = "bits/show_intro.mp3"
+OUTRO_FILE   = "bits/back_to_regular.mp3"
 
-# Shuffle the tracks?
 SHUFFLE      = True
+MAX_TRACKS   = 30                        # Max music tracks per volume
 
 # ----- END CONFIG -----
 
@@ -32,28 +32,32 @@ if not music_tracks:
 if SHUFFLE:
     random.shuffle(music_tracks)
 
-playlist = []
+# Split into volumes of MAX_TRACKS
+volumes = [music_tracks[i:i+MAX_TRACKS] for i in range(0, len(music_tracks), MAX_TRACKS)]
 
-# Intro announcement
-playlist.append({"title": f"~ {SHOW_NAME} ~", "file": INTRO_FILE})
+for vol_num, vol_tracks in enumerate(volumes, start=1):
+    vol_suffix = f" Vol. {vol_num}" if len(volumes) > 1 else ""
+    js_var = f"{JS_VAR_BASE}{vol_num}" if len(volumes) > 1 else JS_VAR_BASE
+    output_file = SHOW_DIR / (f"show_vol{vol_num}.js" if len(volumes) > 1 else "show.js")
 
-# Music tracks
-for track in music_tracks:
-    title = track.stem.replace("_", " ").replace("-", " - ")
-    playlist.append({
-        "title": title,
-        "file": f"shows/{SHOW_DIR.name}/{track.name}"
-    })
+    playlist = []
+    playlist.append({"title": f"~ {SHOW_NAME}{vol_suffix} ~", "file": INTRO_FILE})
 
-# Outro announcement
-playlist.append({"title": "~ Back to Regular Programming ~", "file": OUTRO_FILE})
+    for track in vol_tracks:
+        title = track.stem.replace("_", " ").replace("-", " - ")
+        playlist.append({
+            "title": title,
+            "file": f"shows/{SHOW_DIR.name}/{track.name}"
+        })
 
-# Write JS
-with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    f.write(f"const {JS_VAR_NAME} = [\n")
-    for item in playlist:
-        f.write(f'  {{ title: "{item["title"]}", file: "{item["file"]}" }},\n')
-    f.write("];\n")
+    playlist.append({"title": "~ Back to Regular Programming ~", "file": OUTRO_FILE})
 
-print(f"Show playlist written: {OUTPUT_FILE}")
-print(f"Total tracks: {len(music_tracks)} + intro + outro = {len(playlist)} entries")
+    with open(output_file, "w", encoding="utf-8") as f:
+        f.write(f"const {js_var} = [\n")
+        for item in playlist:
+            f.write(f'  {{ title: "{item["title"]}", file: "{item["file"]}" }},\n')
+        f.write("];\n")
+
+    print(f"  Vol {vol_num}: {output_file.name} — {len(vol_tracks)} tracks + intro/outro = {len(playlist)} entries")
+
+print(f"\nDone. {len(volumes)} volume(s) written for '{SHOW_NAME}'.")
