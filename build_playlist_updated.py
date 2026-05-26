@@ -27,6 +27,9 @@ BITS_DIR  = Path("bits")
 SHOWS_DIR = Path("shows")
 OUTPUT_FILE = Path("tracks_local.js")
 
+# All audio is served from Cloudflare R2 — never local paths
+R2_BASE_URL = "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev"
+
 SONGS_BEFORE_BIT_MIN = 3
 SONGS_BEFORE_BIT_MAX = 6
 TARGET_ID_INTERVAL   = 3600  # seconds (~1 hour)
@@ -113,7 +116,7 @@ while music_index < len(music_tracks):
         track = music_tracks[music_index]
         playlist.append({
             "title": title_from_filename(track),
-            "file": str(track).replace("\\", "/")
+            "file": f"{R2_BASE_URL}/{str(track).replace(chr(92), '/')}"
         })
         elapsed_since_id += get_duration(track)
         music_index += 1
@@ -122,7 +125,7 @@ while music_index < len(music_tracks):
         sid = station_ids[id_index % len(station_ids)]
         playlist.append({
             "title": "~ WOLD-PM ~",
-            "file": str(sid).replace("\\", "/")
+            "file": f"{R2_BASE_URL}/{str(sid).replace(chr(92), '/')}"
         })
         elapsed_since_id = 0
         id_index += 1
@@ -132,7 +135,7 @@ while music_index < len(music_tracks):
         bit = other_bits[bit_index % len(other_bits)]
         playlist.append({
             "title": f"~ {title_from_filename(bit)} ~",
-            "file": str(bit).replace("\\", "/")
+            "file": f"{R2_BASE_URL}/{str(bit).replace(chr(92), '/')}"
         })
         bit_index += 1
 
