@@ -12,5 +12,7 @@ music/tuxedo_junction.mp3
 # Generator output files
 tracks_archive.js
 
-# All show audio — served from R2, never in git
+# All audio — served from R2, never in git
+music/**/*.mp3
+music/*.mp3
 shows/**/*.mp3

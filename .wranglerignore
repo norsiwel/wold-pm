@@ -1,20 +1,24 @@
 # Wrangler deploy ignore file
-# Prevents large files from being uploaded to Cloudflare Workers
+# Only HTML, JS, images deploy to Cloudflare Pages
+# All audio served from R2
 
-# Git internals — never deploy these
+# Git internals
 .git
 
-# Music and show audio — too large for Workers, served from repo directly
+# All audio — served from R2
 music/
-shows/DjangoHour/
+shows/
 
-# Python cache
+# Scripts and tools — not needed on live site
+*.py
+*.sh
+*.bak
+logs/
+bash_scripts/
+
+# Docs
+*.md
+*.txt
+
+# Cache
 __pycache__/
-
-# Build scripts — not needed on the live site
-build_playlist_updated.py
-build_playlist.py.bak
-rotate_playlist.sh
-
-# QC test pages — not for broadcast
-django_test.html
