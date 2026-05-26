@@ -3,266 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WOLD-PM | Post Meridian Radio</title>
+<title>WOLD-PM | Alt-Universe Pirate Radio</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --amber: #c8860a;
-    --amber-bright: #ffb833;
-    --amber-dim: #7a4f00;
-    --darker: #050400;
-  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --amber:#c8860a; --amber-bright:#ffb833; --amber-dim:#7a4f00; --darker:#050400; }
+  html, body { height:100%; background:var(--darker); }
   body {
-    background: var(--darker);
-    color: var(--amber);
-    font-family: 'Special Elite', cursive;
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family:'Special Elite',cursive;
+    color:var(--amber);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
   }
   body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
-    pointer-events: none;
-    z-index: 100;
+    content:'';
+    position:fixed;
+    inset:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+    pointer-events:none;
+    z-index:100;
   }
   .hero {
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    position:relative;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    overflow:hidden;
+    cursor:pointer;
   }
   .hero-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url('WOLD_AD.png');
-    background-size: contain;
-    background-position: center top;
-    background-repeat: no-repeat;
-    filter: brightness(0.7);
-    z-index: 0;
+    position:absolute;
+    inset:0;
+    background-image:url('WOLD_AD.png');
+    background-size:contain;
+    background-position:center top;
+    background-repeat:no-repeat;
+    filter:brightness(0.75);
+    z-index:0;
   }
   .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom,rgba(5,4,0,0) 0%,rgba(5,4,0,0) 30%,rgba(5,4,0,0.6) 70%,rgba(5,4,0,0.95) 100%);
-    z-index: 1;
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to bottom,rgba(5,4,0,0) 0%,rgba(5,4,0,0) 25%,rgba(5,4,0,0.5) 65%,rgba(5,4,0,0.98) 100%);
+    z-index:1;
   }
   .on-air-container {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 3;
+    position:absolute;
+    top:1.5rem;
+    right:1.5rem;
+    z-index:3;
   }
   .on-air-img {
-    width: 160px;
-    opacity: 0.25;
-    filter: grayscale(1);
-    transition: all 0.5s;
+    width:140px;
+    opacity:0.2;
+    filter:grayscale(1);
+    transition:all 0.5s;
   }
   .on-air-img.active {
-    opacity: 1;
-    filter: none;
-    animation: onairpulse 2s ease-in-out infinite;
+    opacity:1;
+    filter:none;
+    animation:onairpulse 2s ease-in-out infinite;
   }
   @keyframes onairpulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    width: 100%;
-    max-width: 700px;
-    padding: 0 1.5rem 3rem;
-    margin-top: 8rem;
+  .station-display {
+    position:relative;
+    z-index:2;
+    text-align:center;
+    padding:0 2rem;
+    margin-top:10rem;
   }
   .now-playing {
-    font-family: 'Courier Prime', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.3em;
-    color: var(--amber-dim);
-    margin-bottom: 0.4rem;
-    min-height: 1.2em;
+    font-family:'Courier Prime',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.35em;
+    color:var(--amber-dim);
+    margin-bottom:0.5rem;
+    min-height:1.2em;
+    transition:opacity 0.5s;
   }
   .track-title {
-    font-size: clamp(0.9rem, 3vw, 1.2rem);
-    letter-spacing: 0.1em;
-    color: var(--amber-bright);
-    text-shadow: 0 0 20px var(--amber);
-    margin-bottom: 1.5rem;
-    min-height: 1.5em;
+    font-size:clamp(1rem,3vw,1.4rem);
+    letter-spacing:0.08em;
+    color:var(--amber-bright);
+    text-shadow:0 0 30px var(--amber);
+    min-height:1.8em;
+    transition:opacity 0.5s;
   }
-  .vu-meter {
-    display: flex;
-    gap: 3px;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    height: 36px;
-    align-items: flex-end;
+  .click-hint {
+    font-family:'Courier Prime',monospace;
+    font-size:0.65rem;
+    letter-spacing:0.3em;
+    color:var(--amber-dim);
+    margin-top:2rem;
+    animation:pulse 2s ease-in-out infinite;
   }
-  .vu-bar {
-    width: 6px;
-    background: var(--amber-dim);
-    border-radius: 2px 2px 0 0;
-    height: 4px;
+  @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+  .click-hint.hidden { display:none; }
+  footer {
+    text-align:center;
+    padding:1.2rem 1rem;
+    border-top:1px solid rgba(122,79,0,0.15);
+    position:relative;
+    z-index:2;
   }
-  .vu-bar.active {
-    animation: vudance var(--speed,0.4s) ease-in-out infinite alternate;
-  }
-  @keyframes vudance {
-    from { height:4px; background:var(--amber-dim); }
-    to { height:var(--height,28px); background:var(--amber-bright); }
-  }
-  .tune-in-btn {
-    display: inline-block;
-    font-family: 'Special Elite', cursive;
-    font-size: 1.1rem;
-    letter-spacing: 0.4em;
-    color: var(--darker);
-    background: var(--amber);
-    border: none;
-    padding: 0.8rem 2.5rem;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    box-shadow: 0 0 20px rgba(200,134,10,0.3);
-  }
-  .tune-in-btn:hover {
-    background: var(--amber-bright);
-    box-shadow: 0 0 40px rgba(200,134,10,0.6);
-    transform: scale(1.02);
-  }
-  .tune-in-btn.tuned {
-    background: transparent;
-    color: var(--amber);
-    border: 1px solid var(--amber-dim);
-    font-size: 0.7rem;
-    letter-spacing: 0.3em;
-    padding: 0.5rem 1.5rem;
-    box-shadow: none;
-  }
-  .tune-in-btn.tuned:hover {
-    border-color: var(--amber);
-    box-shadow: 0 0 10px var(--amber-dim);
-    transform: none;
-  }
-  footer { text-align:center; padding:2rem 1rem; border-top:1px solid rgba(122,79,0,0.2); margin-top:2.5rem; }
-  footer .tagline { font-size:0.85rem; letter-spacing:0.2em; color:var(--amber-dim); margin-bottom:0.4rem; }
-  footer .contact a { font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.15em; color:var(--amber-dim); text-decoration:none; }
+  footer .tagline { font-size:0.75rem; letter-spacing:0.2em; color:var(--amber-dim); margin-bottom:0.2rem; }
+  footer .contact a { font-family:'Courier Prime',monospace; font-size:0.65rem; letter-spacing:0.15em; color:var(--amber-dim); text-decoration:none; }
   footer .contact a:hover { color:var(--amber-bright); }
-  footer .disclaimer { font-family:'Courier Prime',monospace; font-size:0.58rem; color:rgba(122,79,0,0.3); letter-spacing:0.1em; margin-top:1rem; }
-  @media(max-width:480px) { .on-air-img{width:100px;} .controls{gap:0.6rem;} .btn{padding:0.4rem 0.6rem;font-size:0.6rem;} .btn-play{font-size:1.1rem;padding:0.4rem 0.9rem;} }
+  footer .disclaimer { font-family:'Courier Prime',monospace; font-size:0.55rem; color:rgba(122,79,0,0.25); letter-spacing:0.1em; margin-top:0.6rem; }
 </style>
 </head>
 <body>
 <div class="on-air-container">
   <img src="On_Air.png" class="on-air-img" id="onAirSign" alt="ON AIR">
 </div>
-<div class="hero">
+<div class="hero" id="hero" onclick="tuneIn()">
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <div class="now-playing" id="nowPlaying">— WOLD-PM POST MERIDIAN RADIO —</div>
+  <div class="station-display">
+    <div class="now-playing" id="nowPlaying">— WOLD-PM · ALT-UNIVERSE PIRATE RADIO —</div>
     <div class="track-title" id="trackTitle">Don't call us. Just listen.</div>
-    <div class="vu-meter">
-      <div class="vu-bar" style="--speed:0.3s;--height:34px"></div>
-      <div class="vu-bar" style="--speed:0.5s;--height:26px"></div>
-      <div class="vu-bar" style="--speed:0.4s;--height:36px"></div>
-      <div class="vu-bar" style="--speed:0.6s;--height:20px"></div>
-      <div class="vu-bar" style="--speed:0.35s;--height:30px"></div>
-      <div class="vu-bar" style="--speed:0.45s;--height:38px"></div>
-      <div class="vu-bar" style="--speed:0.55s;--height:24px"></div>
-      <div class="vu-bar" style="--speed:0.38s;--height:34px"></div>
-      <div class="vu-bar" style="--speed:0.42s;--height:28px"></div>
-      <div class="vu-bar" style="--speed:0.52s;--height:18px"></div>
-      <div class="vu-bar" style="--speed:0.33s;--height:36px"></div>
-      <div class="vu-bar" style="--speed:0.48s;--height:22px"></div>
-    </div>
-    <button class="tune-in-btn" id="tuneBtn" onclick="tuneIn()">TUNE IN</button>
+    <div class="click-hint" id="clickHint">[ CLICK TO TUNE IN ]</div>
   </div>
-</div>
-  <div class="section-title">On The Air</div>
-  <div class="shows-grid">
-    <div class="show-card">
-      <div class="show-name">Dark Spaces Theatre</div>
-      <div class="show-desc">Original audio drama from the pen of Nor-sigh-well. Stories for the spaces between.</div>
-    </div>
-    <div class="show-card">
-      <div class="show-name">The Unearthly Report</div>
-      <div class="show-desc">News from across the known universe. Delivered without alarm. Management is aware.</div>
-    </div>
-    <div class="show-card">
-      <div class="show-name">The World's Slowest Fast Race</div>
-      <div class="show-desc">Daily updates from the Race Around Jupiter. No one has finished. Tune in tomorrow.</div>
-    </div>
-    <div class="show-card">
-      <div class="show-name">The Dark Spaces Hour</div>
-      <div class="show-desc">Late night listener mail. Strange questions. Stranger answers. Management declines to comment.</div>
-    </div>
-  </div>
-  <div class="static-line"></div>
 </div>
 <footer>
-  <div class="tagline">WOLD-PM — Post Meridian Radio</div>
-  <div class="tagline" style="font-size:0.72rem;margin-bottom:1rem;">Onward through the fog.</div>
+  <div class="tagline">WOLD-PM — Post Meridian Radio · 1170 KC</div>
+  <div class="tagline" style="font-size:0.65rem;margin-bottom:0.6rem;">Onward through the fog.</div>
   <div class="contact"><a href="mailto:management@wold-pm.com">management@wold-pm.com</a></div>
   <div class="disclaimer">No frogs were harmed in the making of this broadcast. Or the beer.</div>
 </footer>
 <audio id="audioPlayer" preload="none"></audio>
 <script src="tracks_local.js"></script>
 <script>
-// tracks[] loaded from tracks_local.js
-// Regenerate with: ~/WOLD-PM.com/rotate_playlist.sh
-
 let current = 0;
 let tuned = false;
+let errorCount = 0;
 const audio = document.getElementById('audioPlayer');
 const onAir = document.getElementById('onAirSign');
-const bars = document.querySelectorAll('.vu-bar');
-const tuneBtn = document.getElementById('tuneBtn');
+const hint = document.getElementById('clickHint');
 
 function tuneIn() {
-  if (!tracks.length) {
-    document.getElementById('trackTitle').textContent = 'Signal coming soon. Stand by.';
-    return;
-  }
-  if (!tuned) {
-    tuned = true;
-    tuneBtn.textContent = 'TUNED IN';
-    tuneBtn.classList.add('tuned');
-    // Drop listener into random position — broadcast radio feel
-    current = Math.floor(Math.random() * tracks.length);
-    playTrack(current);
-  } else {
-    audio.pause();
-    tuned = false;
-    tuneBtn.textContent = 'TUNE IN';
-    tuneBtn.classList.remove('tuned');
-    onAir.classList.remove('active');
-    bars.forEach(b => { b.classList.remove('active'); b.style.height='4px'; });
-    document.getElementById('nowPlaying').textContent = '\u2014 WOLD-PM POST MERIDIAN RADIO \u2014';
-    document.getElementById('trackTitle').textContent = "Don't call us. Just listen.";
-  }
+  if (tuned) return;
+  tuned = true;
+  hint.classList.add('hidden');
+  current = Math.floor(Math.random() * tracks.length);
+  playTrack(current);
 }
 
 function playTrack(i) {
   current = i;
   const t = tracks[i];
   audio.src = t.file;
-  audio.volume = 0.8;
+  audio.volume = 0.85;
   audio.load();
   const p = audio.play();
-  if (p !== undefined) p.catch(() => setTimeout(() => audio.play(), 300));
+  if (p !== undefined) p.catch(() => setTimeout(() => audio.play(), 500));
   errorCount = 0;
-  document.getElementById('nowPlaying').textContent = '\u25b6 NOW BROADCASTING';
+  document.getElementById('nowPlaying').textContent = '▶ NOW BROADCASTING';
   document.getElementById('trackTitle').textContent = t.title;
   onAir.classList.add('active');
-  bars.forEach(b => b.classList.add('active'));
 }
 
 audio.addEventListener('ended', () => {
@@ -270,14 +172,13 @@ audio.addEventListener('ended', () => {
   playTrack(current);
 });
 
-let errorCount = 0;
+let errorCount2 = 0;
 audio.addEventListener('error', () => {
-  errorCount++;
-  if (errorCount <= 2) {
-    // Retry same track twice before skipping — handles slow R2 loads
+  errorCount2++;
+  if (errorCount2 <= 2) {
     setTimeout(() => audio.play().catch(() => {}), 2000);
   } else {
-    errorCount = 0;
+    errorCount2 = 0;
     setTimeout(() => {
       current = (current + 1) % tracks.length;
       playTrack(current);
