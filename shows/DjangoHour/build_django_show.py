@@ -2,16 +2,22 @@
 """
 build_django_show.py — WOLD-PM Django Reinhardt Special Hour Builder
 Splits 75 tracks into volumes of MAX_TRACKS each.
+All URLs use R2 with proper URL encoding.
 """
 
 import random
+import urllib.parse
 from pathlib import Path
+
+def r2_url(base, path):
+    return base + "/" + urllib.parse.quote(str(path), safe="/")
 
 SHOW_NAME   = "Django Reinhardt Special"
 SHOW_DIR    = Path(__file__).parent
 JS_VAR_BASE = "djangoShow"
 INTRO_FILE  = "bits/django_intro.mp3"
 OUTRO_FILE  = "bits/back_to_regular.mp3"
+R2_BASE_URL = "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev"
 SHUFFLE     = True
 MAX_TRACKS  = 30
 
@@ -25,8 +31,6 @@ if SHUFFLE:
     random.shuffle(music_tracks)
 
 # Remove old show JS files before regenerating
-for old in SHOW_DIR.glob("*_show*.js"):
-    old.unlink()
 for old in SHOW_DIR.glob("show*.js"):
     old.unlink()
 
@@ -38,21 +42,23 @@ for vol_num, vol_tracks in enumerate(volumes, start=1):
     output_file = SHOW_DIR / (f"show_vol{vol_num}.js" if len(volumes) > 1 else "show.js")
 
     playlist = []
-    playlist.append({"title": f"~ {SHOW_NAME}{vol_suffix} ~", "file": INTRO_FILE})
+    playlist.append({"title": f"~ {SHOW_NAME}{vol_suffix} ~", "file": r2_url(R2_BASE_URL, INTRO_FILE)})
 
     for track in vol_tracks:
         title = track.stem.replace("_", " ").replace("-", " - ")
         playlist.append({
             "title": title,
-            "file": f"shows/{SHOW_DIR.name}/{track.name}"
+            "file": r2_url(R2_BASE_URL, f"shows/{SHOW_DIR.name}/{track.name}")
         })
 
-    playlist.append({"title": "~ Back to Regular Programming ~", "file": OUTRO_FILE})
+    playlist.append({"title": "~ Back to Regular Programming ~", "file": r2_url(R2_BASE_URL, OUTRO_FILE)})
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(f"const {js_var} = [\n")
         for item in playlist:
-            f.write(f'  {{ title: "{item["title"]}", file: "{item["file"]}" }},\n')
+            title = item["title"].replace('"', '\\"')
+            fpath = item["file"].replace('"', '\\"')
+            f.write(f'  {{ title: "{title}", file: "{fpath}" }},\n')
         f.write("];\n")
 
     print(f"  Vol {vol_num}: {output_file.name} — {len(vol_tracks)} tracks + intro/outro = {len(playlist)} entries")

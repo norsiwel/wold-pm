@@ -69,7 +69,9 @@ if SHOWS_DIR.exists():
             continue  # skip _template and other meta folders
 
         # Collect show JS files — single show.js or split show_vol1.js, show_vol2.js etc
-        js_files = sorted(show_folder.glob("show_vol*.js"))
+        # Skip _pending and other underscore subfolders
+        js_files = sorted(f for f in show_folder.glob("show_vol*.js") 
+                         if "_pending" not in str(f))
         if not js_files:
             single = show_folder / "show.js"
             if single.exists():

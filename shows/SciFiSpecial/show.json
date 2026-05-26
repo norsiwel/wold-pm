@@ -1,0 +1,27 @@
+{
+  "show_id": "scifi_special",
+  "title": "WOLD-PM Sci-Fi Special",
+  "subtitle": "Flash Gordon on the Planet Mongo",
+  "tagline": "Broadcasting from the future. And the past.",
+  "host_voice": "program",
+  "sponsor": "Crown FTL",
+  "sponsor_file": "bits/crown_ftl_ad.mp3",
+  "intro": "bits/scifi_special_intro.mp3",
+  "outro": "bits/scifi_special_outro.mp3",
+  "episode_runtime_minutes": 15,
+  "episodes_folder": "shows/SciFiSpecial/episodes",
+  "episodes": [
+    "Flash Gordon 1935-04-27 On the Planet Mongo.mp3",
+    "Flash Gordon 1935-05-04 Befriends Lionmen.mp3",
+    "Flash Gordon 1935-05-11 Imprisoned by Hawkmen.mp3",
+    "Flash Gordon 1935-05-18 Death Battle Won by Flash.mp3",
+    "Flash Gordon 1935-05-25 Rules Over Cave World.mp3",
+    "Flash Gordon 1935 06 08 Dr Zarkoff to the Rescue.mp3",
+    "Flash Gordon 1935-07-06 Dr Zarkoff is Thawed.mp3",
+    "Flash Gordon 1935-07-13 Dr Zarkoff Shoots Crooks.mp3",
+    "Flash Gordon 1935-07-27 General Tal Rescued Azora.mp3",
+    "Flash Gordon 1935-09-07 Flash Still Invisible.mp3",
+    "Flash Gordon 1935-09-28 Trapped Behind the Iron Door.mp3"
+  ],
+  "notes": "Classic 1935 radio serial, public domain. Crown FTL is natural sponsor. Walter intro needed."
+}
