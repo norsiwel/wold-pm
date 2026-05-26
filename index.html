@@ -267,6 +267,7 @@ function playTrack(i) {
   audio.load();
   const p = audio.play();
   if (p !== undefined) p.catch(() => setTimeout(() => audio.play(), 300));
+  errorCount = 0;
   document.getElementById('nowPlaying').textContent = '\u25b6 NOW BROADCASTING';
   document.getElementById('trackTitle').textContent = t.title;
   onAir.classList.add('active');
@@ -278,11 +279,19 @@ audio.addEventListener('ended', () => {
   playTrack(current);
 });
 
+let errorCount = 0;
 audio.addEventListener('error', () => {
-  setTimeout(() => {
-    current = (current + 1) % tracks.length;
-    playTrack(current);
-  }, 500);
+  errorCount++;
+  if (errorCount <= 2) {
+    // Retry same track twice before skipping — handles slow R2 loads
+    setTimeout(() => audio.play().catch(() => {}), 2000);
+  } else {
+    errorCount = 0;
+    setTimeout(() => {
+      current = (current + 1) % tracks.length;
+      playTrack(current);
+    }, 3000);
+  }
 });
 </script>
 </body>
