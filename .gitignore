@@ -12,6 +12,5 @@ music/tuxedo_junction.mp3
 # Generator output files
 tracks_archive.js
 
-# Django show audio — too large for Cloudflare, served via R2 (TODO)
-shows/DjangoHour/*.mp3
-shows/FolkInterlude/*.mp3
+# All show audio — served from R2, never in git
+shows/**/*.mp3
