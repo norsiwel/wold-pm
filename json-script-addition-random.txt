@@ -1,24 +1,22 @@
-function playRandomSegment(playlist) {
+function playRandomProgram(playlist) {
     const audio = document.getElementById('myPlayer');
-    
-    // 1. Pick a random file from your JSON array
+
+    // 1. Pick a random PROGRAM from your JSON array
     const randomIndex = Math.floor(Math.random() * playlist.length);
     const selectedTrack = playlist[randomIndex];
-    
+
+    // 2. Load the selected program
     audio.src = selectedTrack.url;
 
-    // 2. Use 'loadedmetadata' to ensure we have the file duration before seeking
+    // 3. Start the program at the beginning, not at a random point
     audio.onloadedmetadata = () => {
-        // 3. Pick a random start point
-        const randomStart = Math.random() * (audio.duration * 0.9);
-        
-        audio.currentTime = randomStart;
+        audio.currentTime = 0;
         audio.play();
     };
 
-    // 4. Ensure the NEXT track starts at the BEGINNING
+    // 4. When the full program ends, play the outro.
+    // The outro function should then call playNextTrack() when it finishes.
     audio.onended = () => {
-        // Select next track sequentially (or pick another random one)
-        playNextTrack(); 
+        playOutro();
     };
 }
