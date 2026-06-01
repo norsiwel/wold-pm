@@ -26,3 +26,6 @@ logs/
 music/**/*.mp3
 music/*.mp3
 shows/**/*.mp3
+*.flac
+*/raw/
+*/source/
