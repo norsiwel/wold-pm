@@ -99,7 +99,29 @@ if not bit_tracks:
     sys.exit(1)
 
 station_ids = [b for b in bit_tracks if "station_id" in b.name.lower()]
-other_bits  = [b for b in bit_tracks if b not in station_ids]
+
+# Paired bits — must stay together, handled by special shows system
+paired_names = {"armstrong_intro", "armstrong_outro",
+                "django_intro", "folk_intro", "folk_outro",
+                "bird_intro", "back_to_regular"}
+paired_bits  = [b for b in bit_tracks if b.stem in paired_names]
+
+# Standalone bits — random distribution, one at a time
+standalone_bits = [b for b in bit_tracks
+                   if b not in station_ids and b not in paired_bits]
+
+# Friendly titles for standalone bits
+STANDALONE_TITLES = {
+    "Travel-with-Arlo":      "~ Arlo's Traffic Report ~",
+    "WOLD-weather-by GTFbeer": "~ WOLD Weather — GTF Beer ~",
+    "EveningNews-CrownFTL":  "~ Evening News with Crown FTL ~",
+    "PSA-Recycling-01":      "~ PSA: Recycling ~",
+    "mannavator_ad":         "~ mannavator ad ~",
+    "Illumination-Station-AD": "~ Illumination-Station-AD ~",
+    "unearthly_newsflash":   "~ unearthly newsflash ~",
+}
+
+other_bits = standalone_bits
 
 random.shuffle(music_tracks)
 random.shuffle(other_bits)
@@ -140,8 +162,10 @@ while music_index < len(music_tracks):
 
     if other_bits:
         bit = other_bits[bit_index % len(other_bits)]
+        bit_title = STANDALONE_TITLES.get(bit.stem,
+                    f"~ {title_from_filename(bit)} ~")
         playlist.append({
-            "title": f"~ {title_from_filename(bit)} ~",
+            "title": bit_title,
             "file": r2_url(R2_BASE_URL, bit)
         })
         bit_index += 1
