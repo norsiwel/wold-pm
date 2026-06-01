@@ -112,13 +112,14 @@ standalone_bits = [b for b in bit_tracks
 
 # Friendly titles for standalone bits
 STANDALONE_TITLES = {
-    "Travel-with-Arlo":      "~ Arlo's Traffic Report ~",
+    "Travel-with-Arlo":        "~ Arlo's Traffic Report ~",
     "WOLD-weather-by GTFbeer": "~ WOLD Weather — GTF Beer ~",
-    "EveningNews-CrownFTL":  "~ Evening News with Crown FTL ~",
-    "PSA-Recycling-01":      "~ PSA: Recycling ~",
-    "mannavator_ad":         "~ mannavator ad ~",
-    "Illumination-Station-AD": "~ Illumination-Station-AD ~",
-    "unearthly_newsflash":   "~ unearthly newsflash ~",
+    "EveningNews-CrownFTL":   "~ Evening News with Crown FTL ~",
+    "PSA-recycling":           "~ PSA: Recycling ~",
+    "Phoenix-Atomic-cycles":   "~ Phoenix Atomic Motorcycles ~",
+    "mannavator_ad":           "~ mannavator ad ~",
+    "Illumination-Station-AD": "~ Illumination Station ~",
+    "unearthly_newsflash":     "~ unearthly newsflash ~",
 }
 
 other_bits = standalone_bits
