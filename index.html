@@ -138,12 +138,13 @@
 <audio id="audioPlayer" preload="none"></audio>
 <script src="tracks_local.js"></script>
 <script>
-let current = 0;
-let tuned = false;
-let errorCount = 0;
-const audio = document.getElementById('audioPlayer');
-const onAir = document.getElementById('onAirSign');
-const hint = document.getElementById('clickHint');
+let current   = 0;
+let tuned     = false;
+let retries   = 0;
+const MAX_RETRIES = 4;
+const audio   = document.getElementById('audioPlayer');
+const onAir   = document.getElementById('onAirSign');
+const hint    = document.getElementById('clickHint');
 
 function tuneIn() {
   if (tuned) return;
@@ -154,37 +155,66 @@ function tuneIn() {
 }
 
 function playTrack(i) {
-  current = i;
-  const t = tracks[i];
-  audio.src = t.file;
-  audio.volume = 0.85;
-  audio.load();
-  const p = audio.play();
-  if (p !== undefined) p.catch(() => setTimeout(() => audio.play(), 500));
-  errorCount = 0;
-  document.getElementById('nowPlaying').textContent = '▶ NOW BROADCASTING';
-  document.getElementById('trackTitle').textContent = t.title;
+  current = ((i % tracks.length) + tracks.length) % tracks.length;
+  retries = 0;
+  const t = tracks[current];
+  document.getElementById('nowPlaying').textContent  = '▶ NOW BROADCASTING';
+  document.getElementById('trackTitle').textContent  = t.title;
   onAir.classList.add('active');
+  loadAndPlay(t.file);
 }
 
-audio.addEventListener('ended', () => {
-  current = (current + 1) % tracks.length;
-  playTrack(current);
-});
+function loadAndPlay(url) {
+  audio.pause();
+  audio.src = url;
+  audio.load();
+  audio.volume = 0.85;
+  const p = audio.play();
+  if (p !== undefined) {
+    p.catch(err => {
+      // Autoplay blocked — wait for user gesture already handled by tuneIn()
+      console.warn('play() rejected:', err);
+    });
+  }
+}
 
-let errorCount2 = 0;
+function nextTrack() {
+  playTrack((current + 1) % tracks.length);
+}
+
+// Natural end — advance immediately
+audio.addEventListener('ended', nextTrack);
+
+// Error — retry same track up to MAX_RETRIES, then skip
 audio.addEventListener('error', () => {
-  errorCount2++;
-  if (errorCount2 <= 2) {
-    setTimeout(() => audio.play().catch(() => {}), 2000);
+  retries++;
+  if (retries <= MAX_RETRIES) {
+    const delay = Math.min(1000 * retries, 4000);
+    console.warn(`Track error, retry ${retries}/${MAX_RETRIES} in ${delay}ms:`, tracks[current].title);
+    setTimeout(() => loadAndPlay(tracks[current].file), delay);
   } else {
-    errorCount2 = 0;
-    setTimeout(() => {
-      current = (current + 1) % tracks.length;
-      playTrack(current);
-    }, 3000);
+    console.error(`Skipping after ${MAX_RETRIES} retries:`, tracks[current].title);
+    setTimeout(nextTrack, 1000);
   }
 });
+
+// Stall detector — if playback stops progressing for 10s, nudge it
+let lastTime  = 0;
+let stallCount = 0;
+setInterval(() => {
+  if (!tuned || audio.paused || audio.ended) return;
+  if (audio.currentTime === lastTime) {
+    stallCount++;
+    if (stallCount >= 2) {
+      console.warn('Stall detected, skipping:', tracks[current].title);
+      stallCount = 0;
+      nextTrack();
+    }
+  } else {
+    stallCount = 0;
+  }
+  lastTime = audio.currentTime;
+}, 5000);
 </script>
 </body>
 </html>
