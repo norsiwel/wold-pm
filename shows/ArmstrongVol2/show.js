@@ -1,0 +1,18 @@
+const armstrongVol2 = [
+  { title: "~ All That Jazz — Louis Armstrong ~", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/bits/armstrong_intro.mp3" },
+  { title: "A Monday Date", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/16_A%20Monday%20Date.mp3" },
+  { title: "West End Blues", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/17_West%20End%20Blues.mp3" },
+  { title: "Sugar Foot Strut", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/18_Sugar%20Foot%20Strut.mp3" },
+  { title: "Squeeze Me", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/19_Squeeze%20Me.mp3" },
+  { title: "Savoyageur's Stomp", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/20_Savoyageur%27s%20Stomp.mp3" },
+  { title: "Beau Koo Jack", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/21_Beau%20Koo%20Jack.mp3" },
+  { title: "Save It, Pretty Mama", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/22_Save%20It%2C%20Pretty%20Mama.mp3" },
+  { title: "Mahogany Hill Stomp", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/23_Mahogany%20Hill%20Stomp.mp3" },
+  { title: "St Louis Blues", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/24_St%20Louis%20Blues.mp3" },
+  { title: "I'm A Ding Dong Daddy", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/25_I%27m%20A%20Ding%20Dong%20Daddy.mp3" },
+  { title: "I'll Be Glad When You're Dead, You Rascal, You", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/26_I%27ll%20Be%20Glad%20When%20You%27re%20Dead%2C%20You%20Rascal%2C%20You.mp3" },
+  { title: "The Lonsome Road", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/27_The%20Lonsome%20Road.mp3" },
+  { title: "Kickin' The Gong Around", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/28_Kickin%27%20The%20Gong%20Around.mp3" },
+  { title: "Lawd, You Made The Night Too Long", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/shows/ArmstrongVol2/29_Lawd%2C%20You%20Made%20The%20Night%20Too%20Long.mp3" },
+  { title: "~ Back to the Regular Program ~", file: "https://pub-70b842d65a4f4ada82dec98f8d446fa2.r2.dev/bits/armstrong_outro.mp3" },
+];
