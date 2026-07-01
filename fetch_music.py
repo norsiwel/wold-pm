@@ -11,7 +11,7 @@ import urllib.request
 import json
 import time
 
-MUSIC_DIR = "/home/ron/WOLD-PM.com/music"
+MUSIC_DIR = "/run/media/ron/T7/WOLD-PM.com/music"
 
 # Search targets
 SEARCHES = [
