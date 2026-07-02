@@ -46,7 +46,7 @@ TARGET_ID_INTERVAL   = 3600  # seconds (~1 hour)
 # folder is relative to SHOWS_DIR; file is the mp3 inside it.
 SPECIAL_EPISODES = [
     {"folder": "DarkSpacesTheatre", "file": "Just_in_Time.mp3",
-     "title": "Dark Spaces Theatre: Just In Time", "copies": 4},
+     "title": "Dark Spaces Theatre #1", "copies": 4},
 ]
 
 # ----- Helpers -----
