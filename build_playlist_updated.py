@@ -241,6 +241,15 @@ for ep in SPECIAL_EPISODES:
         print(f"  Inserted '{ep['title']}' copy {i+1}/{copies} at position "
               f"{insert_at} (~{target_time/3600:.1f}h mark)")
 
+# ----- Attach Real Durations to Every Entry -----
+# Needed for wall-clock-synced tune-in (see index.html) — a real broadcast
+# station has one continuous signal, so a listener tuning in should land
+# wherever the loop actually is right now, not always at track start.
+
+for item in playlist:
+    p = local_path_from_url(item["file"])
+    item["duration"] = round(get_duration(p), 2) if p.exists() else 180.0
+
 # ----- Write Output -----
 
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
@@ -248,7 +257,7 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
     for item in playlist:
         title = item["title"].replace('"', '\\"')
         fpath = item["file"].replace('"', '\\"')
-        f.write(f'  {{ title: "{title}", file: "{fpath}" }},\n')
+        f.write(f'  {{ title: "{title}", file: "{fpath}", duration: {item["duration"]} }},\n')
     f.write("];\n")
 
 print(f"\nGenerated {OUTPUT_FILE}")

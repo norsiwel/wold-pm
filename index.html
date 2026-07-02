@@ -150,25 +150,47 @@ function tuneIn() {
   if (tuned) return;
   tuned = true;
   hint.classList.add('hidden');
-  current = Math.floor(Math.random() * tracks.length);
-  playTrack(current);
+
+  // Wall-clock-synced position — simulates one continuous broadcast signal.
+  // Everyone tuning in at the same real moment lands at the same point in
+  // the loop (mid-track included), just like a real station, instead of
+  // always getting a fresh start of a randomly-picked track.
+  const totalDuration = tracks.reduce((sum, t) => sum + (t.duration || 180), 0);
+  let elapsed = (Date.now() / 1000) % totalDuration;
+
+  let idx = 0;
+  for (; idx < tracks.length; idx++) {
+    const d = tracks[idx].duration || 180;
+    if (elapsed < d) break;
+    elapsed -= d;
+  }
+  idx = Math.min(idx, tracks.length - 1);
+
+  playTrack(idx, elapsed);
 }
 
-function playTrack(i) {
+function playTrack(i, startOffset) {
   current = ((i % tracks.length) + tracks.length) % tracks.length;
   retries = 0;
   const t = tracks[current];
   document.getElementById('nowPlaying').textContent  = '▶ NOW BROADCASTING';
   document.getElementById('trackTitle').textContent  = t.title;
   onAir.classList.add('active');
-  loadAndPlay(t.file);
+  loadAndPlay(t.file, startOffset);
 }
 
-function loadAndPlay(url) {
+function loadAndPlay(url, startOffset) {
   audio.pause();
   audio.src = url;
   audio.load();
   audio.volume = 0.85;
+  if (startOffset) {
+    const seekOnceReady = () => {
+      audio.currentTime = startOffset;
+      audio.removeEventListener('loadedmetadata', seekOnceReady);
+    };
+    audio.addEventListener('loadedmetadata', seekOnceReady);
+  }
   const p = audio.play();
   if (p !== undefined) {
     p.catch(err => {
