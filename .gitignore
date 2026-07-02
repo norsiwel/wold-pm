@@ -29,3 +29,8 @@ shows/**/*.mp3
 *.flac
 */raw/
 */source/
+
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
