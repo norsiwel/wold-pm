@@ -117,3 +117,8 @@ Theatre #1". When Ring Bearer (DST-002) is added next session, its
 title should be "Dark Spaces Theatre #2" for consistency. 4 episodes
 planned total per Ron (3 remaining after Just In Time: Ring Bearer plus
 two not yet started).
+Ron also has Flash Gordon episodes already downloaded he'd like added
+to the station at some point — not Dark Spaces Theatre content, so
+likely fits better as its own `shows/` entry (shuffled or sequential
+serial, TBD) rather than the SPECIAL_EPISODES single-file pattern.
+Sort out the right shape for it next session once Ron says more.
