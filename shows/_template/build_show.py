@@ -6,7 +6,16 @@ Automatically splits into multiple volumes if track count exceeds MAX_TRACKS.
 """
 
 import random
+import urllib.parse
 from pathlib import Path
+
+def r2_url(base, path):
+    """Build R2 URL with spaces and special characters properly encoded.
+    Matches build_playlist_updated.py's encoding — without this, filenames
+    with spaces/apostrophes/parens/non-ASCII chars produce broken URLs that
+    404 on R2. This was the actual bug behind DjangoHour et al failing on
+    track 2+ (fixed 2026-07-01, see rotate_playlist.sh header)."""
+    return base + "/" + urllib.parse.quote(str(path), safe="/")
 
 # ----- CONFIG — edit these for each show -----
 
@@ -44,16 +53,16 @@ for vol_num, vol_tracks in enumerate(volumes, start=1):
     output_file = SHOW_DIR / (f"show_vol{vol_num}.js" if len(volumes) > 1 else "show.js")
 
     playlist = []
-    playlist.append({"title": f"~ {SHOW_NAME}{vol_suffix} ~", "file": f"{R2_BASE_URL}/{INTRO_FILE}"})
+    playlist.append({"title": f"~ {SHOW_NAME}{vol_suffix} ~", "file": r2_url(R2_BASE_URL, INTRO_FILE)})
 
     for track in vol_tracks:
         title = track.stem.replace("_", " ").replace("-", " - ")
         playlist.append({
             "title": title,
-            "file": f"{R2_BASE_URL}/shows/{SHOW_DIR.name}/{track.name}"
+            "file": r2_url(R2_BASE_URL, f"shows/{SHOW_DIR.name}/{track.name}")
         })
 
-    playlist.append({"title": "~ Back to Regular Programming ~", "file": f"{R2_BASE_URL}/{OUTRO_FILE}"})
+    playlist.append({"title": "~ Back to Regular Programming ~", "file": r2_url(R2_BASE_URL, OUTRO_FILE)})
 
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(f"const {js_var} = [\n")
