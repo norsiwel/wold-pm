@@ -39,6 +39,16 @@ SONGS_BEFORE_BIT_MIN = 3
 SONGS_BEFORE_BIT_MAX = 6
 TARGET_ID_INTERVAL   = 3600  # seconds (~1 hour)
 
+# Standalone single-file episodes (e.g. Dark Spaces Theatre) — NOT shuffled
+# multi-track shows. Inserted N times at genuinely even TIME intervals
+# through the finished rotation (not just even list-position, since a
+# 25-minute episode needs real hour-spacing, not track-count spacing).
+# folder is relative to SHOWS_DIR; file is the mp3 inside it.
+SPECIAL_EPISODES = [
+    {"folder": "DarkSpacesTheatre", "file": "Just_in_Time.mp3",
+     "title": "Dark Spaces Theatre: Just In Time", "copies": 4},
+]
+
 # ----- Helpers -----
 
 def get_duration(file_path):
@@ -188,6 +198,49 @@ if special_shows:
         print(f"  Inserted '{show['name']}' at position {insert_at} "
               f"({insert_at / (len(playlist) / 100):.0f}% through rotation)")
 
+# ----- Insert Standalone Special Episodes at Even TIME Intervals -----
+# Unlike shows (spaced by list position), episodes are spaced by actual
+# cumulative duration so a 25-minute episode lands roughly every N hours,
+# not just every N tracks — track lengths vary too much for position-based
+# spacing to mean anything time-wise.
+
+def local_path_from_url(url):
+    rel = urllib.parse.unquote(url.replace(R2_BASE_URL + "/", ""))
+    return Path(rel)
+
+for ep in SPECIAL_EPISODES:
+    ep_path = SHOWS_DIR / ep["folder"] / ep["file"]
+    if not ep_path.exists():
+        print(f"  WARNING: episode file not found, skipping: {ep_path}")
+        continue
+
+    ep_entry = {"title": ep["title"], "file": r2_url(R2_BASE_URL, ep_path)}
+    ep_duration = get_duration(ep_path)
+    copies = ep["copies"]
+
+    durations = [
+        get_duration(local_path_from_url(item["file"]))
+        if local_path_from_url(item["file"]).exists() else 180
+        for item in playlist
+    ]
+    total_duration = sum(durations)
+
+    for i in range(copies):
+        target_time = total_duration * (i + 1) / (copies + 1)
+        cum = 0.0
+        insert_at = len(playlist)
+        for idx, d in enumerate(durations):
+            if cum >= target_time:
+                insert_at = idx
+                break
+            cum += d
+        insert_at = max(1, min(insert_at, len(playlist)))
+        playlist.insert(insert_at, ep_entry)
+        durations.insert(insert_at, ep_duration)
+        total_duration += ep_duration
+        print(f"  Inserted '{ep['title']}' copy {i+1}/{copies} at position "
+              f"{insert_at} (~{target_time/3600:.1f}h mark)")
+
 # ----- Write Output -----
 
 with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
@@ -201,4 +254,5 @@ with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
 print(f"\nGenerated {OUTPUT_FILE}")
 print(f"Regular tracks:  {len(music_tracks)}")
 print(f"Special shows:   {len(special_shows)}")
+print(f"Special episodes: {sum(e['copies'] for e in SPECIAL_EPISODES if (SHOWS_DIR / e['folder'] / e['file']).exists())}")
 print(f"Total scheduled: {len(playlist)}")
