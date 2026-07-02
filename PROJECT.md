@@ -87,3 +87,25 @@ show tracks via the manifest and only pushed the 1 new episode file,
 validating that fix from earlier in the session.
 
 Also added GoatCounter analytics (see above) and this PROJECT.md.
+
+### DONE — July 1, 2026, third pass
+Fixed tune-in to be a genuine continuous-broadcast simulation instead of
+"random track, always from 0:00." Root issue: `tuneIn()` picked a random
+index into `tracks[]` and played it from the start every time — so even
+though a listener might randomly land on a Dark Spaces episode, they'd
+always hear it from the very beginning, never mid-story, which isn't how
+a real station works (one continuous signal — tune in whenever, hear
+wherever it currently is).
+
+Fix: every entry in `tracks_local.js` now carries its real `duration`
+(computed at build time in `build_playlist_updated.py`, previously only
+title/file were written). `tuneIn()` in `index.html` now computes
+`Date.now()/1000 % totalLoopDuration` to find the wall-clock-synced
+position in the loop, walks the track list to find which track and what
+offset that falls in, and seeks the audio element there once metadata
+loads. Everyone tuning in at the same real moment hears the same point
+in the broadcast — mid-episode drop-ins now genuinely happen.
+
+Confirmed total loop is exactly 12h 6m now that every entry has a real
+measured duration (earlier estimates had ~30 entries the duration-check
+script couldn't resolve).
