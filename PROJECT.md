@@ -109,3 +109,11 @@ in the broadcast — mid-episode drop-ins now genuinely happen.
 Confirmed total loop is exactly 12h 6m now that every entry has a real
 measured duration (earlier estimates had ~30 entries the duration-check
 script couldn't resolve).
+
+On-air title for SPECIAL_EPISODES entries follows the DST-### numbering
+from the PlaymakerStudio production folder names, not the episode's
+subtitle — Just In Time is DST-001, so it displays as "Dark Spaces
+Theatre #1". When Ring Bearer (DST-002) is added next session, its
+title should be "Dark Spaces Theatre #2" for consistency. 4 episodes
+planned total per Ron (3 remaining after Just In Time: Ring Bearer plus
+two not yet started).
