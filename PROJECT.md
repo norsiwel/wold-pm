@@ -61,23 +61,29 @@ Added to `index.html` only (no `mobile.html` exists on this site, unlike
 readers-retreat which has both).
 
 ### NOT YET DONE — next step
-Ron wants the two finished Dark Spaces Theatre episodes (Ring Bearer,
-Just In Time — both built in the separate PlaymakerStudio project) aired
-in rotation, inserted evenly at 4 points (~every 2 hours). This has NOT
-been built yet — needs:
-1. Ron to confirm: all 4 slots = Just In Time, or split between both
-   episodes?
-2. Custom scheduling logic in `build_playlist_updated.py` — the existing
-   `shows/` pipeline doesn't fit a single self-contained episode file
-   well (it's built for shuffled multi-track music hours with separate
-   intro/outro bits). A simpler even-spacing insert (like the existing
-   "Insert Special Shows at Midpoint" logic, but for whole single files
-   at N evenly-spaced points) is more appropriate.
-3. Episode file(s) need to be placed somewhere R2-syncable (not yet
-   decided where — likely a new `shows/DarkSpacesTheatre/` folder or
-   similar, uploaded via the same manifest-tracked mechanism just built).
+Ring Bearer still needs its own DST intro/outro treatment (built in
+PlaymakerStudio, not here) — with mannavator_ad.mp3 as its sponsor ad
+instead of Illumination Station, matching Just In Time's pattern. Once
+that's done, add a second entry to SPECIAL_EPISODES in
+build_playlist_updated.py (same pattern already built for Just In Time)
+and re-run rotate_playlist.sh. Ron's call on whether it gets 4 slots of
+its own or splits the 4 slots with Just In Time — not decided yet.
 
-Current loop length: regenerate and check after the shows fix (was 96
-tracks / ~4.2hr with shows inactive; should be significantly longer now
-that ~150 show tracks are live — get an actual number next session
-rather than estimate).
+Current loop: ~10h39m resolved (232 total scheduled entries — 85 regular,
+6 special show volumes, 4 copies of Just In Time), landing close to 12h
+once ~30 unresolved-by-script entries are counted (a quirk of the
+duration-check script's URL-to-local-path matching, not missing content).
+
+### DONE — July 1, 2026, second half of session
+Built SPECIAL_EPISODES insertion logic in build_playlist_updated.py:
+standalone single-file episodes (as opposed to shuffled multi-track
+shows) get inserted N times spaced by actual cumulative TIME, not list
+position — a 25-minute episode needs real hour-spacing, track-count
+spacing would be meaningless given how much track lengths vary. Just In
+Time placed in shows/DarkSpacesTheatre/Just_in_Time.mp3, 4 copies
+inserted at ~2.1h/4.4h/6.8h/9.4h marks. Live and confirmed working —
+second rotate_playlist.sh run correctly skipped all 151 already-uploaded
+show tracks via the manifest and only pushed the 1 new episode file,
+validating that fix from earlier in the session.
+
+Also added GoatCounter analytics (see above) and this PROJECT.md.
